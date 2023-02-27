@@ -26,13 +26,11 @@ pipeline {
                 sh './jenkins/scripts/deliver.sh'
             }
         }
-        stage('SonarQube analysis') {
-            steps {
-                def scannerHome = tool name: 'SonarScanner';
-                withSonarQubeEnv('SonarJenkins') { 
-                  sh "${scannerHome}/bin/sonar-scanner"
-                }
-            }
-          }
+        stage('SonarQube') {
+			def sonarqubeScannerHome = tool name: 'sonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+			withCredentials([string(credentialsId: 'SonarJenkins', variable: 'sonarLogin')]) {
+				sh "${scannerHome}/bin/sonar-scanner"
+			}
+		}
     }
 }
